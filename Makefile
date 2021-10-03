@@ -192,8 +192,8 @@ take-five:
 	@sleep 5
 
 
-.PHONY: docker-custom
-docker-custom:
+.PHONY: docker-regenerate-custom
+docker-regenerate-custom:
 	rover supergraph compose --config ./supergraph.yaml > supergraph.graphql
 	@sleep 1
 	docker-compose -f docker-compose.otel-collector.yml down
@@ -201,3 +201,13 @@ docker-custom:
 	docker-compose -f docker-compose.otel-collector.yml up -d --build
 	@sleep 1
 	docker-compose -f docker-compose.otel-collector.yml logs -f
+
+.PHONY: docker-custom-up
+docker-custom-up:
+	docker-compose -f docker-compose.otel-collector.yml up -d --build
+	@sleep 1
+	docker-compose -f docker-compose.otel-collector.yml logs -f
+
+.PHONY: docker-custom-down
+docker-custom-up:
+	docker-compose -f docker-compose.otel-collector.yml down
