@@ -1,0 +1,17 @@
+scalar Date
+
+type Candidate @key(fields: "_id") {
+    _id: ID!
+    created_at: Date!
+    user: Applicant!
+}
+
+extend type Job @key(fields: "_id") {
+    _id: ID! @external
+    candidates: [Candidate!]!
+}
+
+extend type Applicant @key(fields: "_id") {
+    _id: ID! @external
+    candidates: [Candidate!]!
+}
