@@ -1,0 +1,12 @@
+scalar Date
+
+type Job @key(fields: "_id") {
+    _id: ID!
+    createdAt: Date!
+    author: Employer!
+}
+
+extend type Employer @key(fields: "_id") {
+    _id: ID! @external
+    jobs: [Job!]!
+}

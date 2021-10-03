@@ -1,0 +1,18 @@
+{
+  "name": "subgraph-jobs",
+  "version": "1.1.21",
+  "description": "",
+  "main": "jobs.js",
+  "scripts": {
+    "start": "node jobs.js"
+  },
+  "dependencies": {
+    "@apollo/federation": "0.33.0",
+    "apollo-server": "3.3.0",
+    "supergraph-demo-opentelemetry": "0.0.3",
+    "graphql": "15.6.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
