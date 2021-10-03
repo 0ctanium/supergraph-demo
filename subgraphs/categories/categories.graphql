@@ -1,0 +1,19 @@
+type Category @key(fields: "_id") {
+    _id: ID!
+}
+
+
+extend interface User @key(fields: "_id") {
+    _id: ID! @external
+    categories: [Category!]!
+}
+
+extend type Applicant @key(fields: "_id") {
+    _id: ID! @external
+    categories: [Category!]!
+}
+
+extend type Employer @key(fields: "_id") {
+    _id: ID! @external
+    categories: [Category!]!
+}
