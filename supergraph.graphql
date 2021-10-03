@@ -1,7 +1,6 @@
 schema
   @core(feature: "https://specs.apollo.dev/core/v0.1"),
-  @core(feature: "https://specs.apollo.dev/join/v0.1"),
-  @core(feature: "https://specs.apollo.dev/tag/v0.1")
+  @core(feature: "https://specs.apollo.dev/join/v0.1")
 {
   query: Query
 }
@@ -16,57 +15,81 @@ directive @join__owner(graph: join__Graph!) on OBJECT | INTERFACE
 
 directive @join__graph(name: String!, url: String!) on ENUM_VALUE
 
-directive @tag(name: String!) repeatable on FIELD_DEFINITION
+type Applicant implements User
+  @join__owner(graph: USERS)
+  @join__type(graph: USERS, key: "_id")
+  @join__type(graph: CANDIDATES, key: "_id")
+  @join__type(graph: CATEGORIES, key: "_id")
+{
+  _id: ID! @join__field(graph: USERS)
+  candidates: [Candidate!]! @join__field(graph: CANDIDATES)
+  categories: [Category!]! @join__field(graph: CATEGORIES)
+  email: String! @join__field(graph: USERS)
+  name: String! @join__field(graph: USERS)
+  skills: [String!]! @join__field(graph: USERS)
+}
 
-type DeliveryEstimates {
-  estimatedDelivery: String
-  fastestDelivery: String
+type Candidate
+  @join__owner(graph: CANDIDATES)
+  @join__type(graph: CANDIDATES, key: "_id")
+{
+  _id: ID! @join__field(graph: CANDIDATES)
+  created_at: Date! @join__field(graph: CANDIDATES)
+  user: Applicant! @join__field(graph: CANDIDATES)
+}
+
+type Category
+  @join__owner(graph: CATEGORIES)
+  @join__type(graph: CATEGORIES, key: "_id")
+{
+  _id: ID! @join__field(graph: CATEGORIES)
+}
+
+scalar Date
+
+type Employer implements User
+  @join__owner(graph: USERS)
+  @join__type(graph: USERS, key: "_id")
+  @join__type(graph: CATEGORIES, key: "_id")
+  @join__type(graph: JOBS, key: "_id")
+{
+  _id: ID! @join__field(graph: USERS)
+  categories: [Category!]! @join__field(graph: CATEGORIES)
+  email: String! @join__field(graph: USERS)
+  jobs: [Job!]! @join__field(graph: JOBS)
+  name: String! @join__field(graph: USERS)
+  skills: [String!]! @join__field(graph: USERS)
+}
+
+type Job
+  @join__owner(graph: JOBS)
+  @join__type(graph: JOBS, key: "_id")
+  @join__type(graph: CANDIDATES, key: "_id")
+{
+  _id: ID! @join__field(graph: JOBS)
+  author: Employer! @join__field(graph: JOBS)
+  candidates: [Candidate!]! @join__field(graph: CANDIDATES)
+  createdAt: Date! @join__field(graph: JOBS)
 }
 
 scalar join__FieldSet
 
 enum join__Graph {
-  INVENTORY @join__graph(name: "inventory" url: "http://inventory:4000/graphql")
-  PRODUCTS @join__graph(name: "products" url: "http://products:4000/graphql")
+  CANDIDATES @join__graph(name: "candidates" url: "http://candidates:4000/graphql")
+  CATEGORIES @join__graph(name: "categories" url: "http://categories:4000/graphql")
+  JOBS @join__graph(name: "jobs" url: "http://jobs:4000/graphql")
   USERS @join__graph(name: "users" url: "http://users:4000/graphql")
 }
 
-type Product
-  @join__owner(graph: PRODUCTS)
-  @join__type(graph: PRODUCTS, key: "id")
-  @join__type(graph: PRODUCTS, key: "sku package")
-  @join__type(graph: PRODUCTS, key: "sku variation{id}")
-  @join__type(graph: INVENTORY, key: "id")
-{
-  createdBy: User @join__field(graph: PRODUCTS, provides: "totalProductsCreated")
-  delivery(zip: String): DeliveryEstimates @join__field(graph: INVENTORY, requires: "dimensions{size weight}")
-  dimensions: ProductDimension @join__field(graph: PRODUCTS)
-  id: ID! @join__field(graph: PRODUCTS) @tag(name: "hi from products") @tag(name: "hi from inventory")
-  package: String @join__field(graph: PRODUCTS)
-  sku: String @join__field(graph: PRODUCTS) @tag(name: "hi from products")
-  variation: ProductVariation @join__field(graph: PRODUCTS)
-}
-
-type ProductDimension {
-  size: String
-  weight: Float @tag(name: "hi from inventory value type field")
-}
-
-type ProductVariation {
-  id: ID!
-}
-
 type Query {
-  allProducts: [Product] @join__field(graph: PRODUCTS)
-  product(id: ID!): Product @join__field(graph: PRODUCTS)
+  allUsers: [User!]! @join__field(graph: USERS)
+  user(id: ID!): User @join__field(graph: USERS)
 }
 
-type User
-  @join__owner(graph: USERS)
-  @join__type(graph: USERS, key: "email")
-  @join__type(graph: PRODUCTS, key: "email")
-{
-  email: ID! @join__field(graph: USERS)
-  name: String @join__field(graph: USERS)
-  totalProductsCreated: Int @join__field(graph: USERS)
+interface User {
+  _id: ID!
+  categories: [Category!]!
+  email: String!
+  name: String!
+  skills: [String!]!
 }

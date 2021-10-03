@@ -1,12 +1,16 @@
 subgraphs:
-  inventory:
-    routing_url: http://inventory:4000/graphql
+  candidates:
+    routing_url: http://candidates:4000/graphql
     schema:
-      file: ./subgraphs/inventory/inventory.graphql
-  products:
-    routing_url: http://products:4000/graphql
+      file: ./subgraphs/candidates/candidates.graphql
+  categories:
+    routing_url: http://categories:4000/graphql
     schema:
-      file: ./subgraphs/products/products.graphql
+      file: ./subgraphs/categories/categories.graphql
+  jobs:
+    routing_url: http://jobs:4000/graphql
+    schema:
+      file: ./subgraphs/jobs/jobs.graphql
   users:
     routing_url: http://users:4000/graphql
     schema:
