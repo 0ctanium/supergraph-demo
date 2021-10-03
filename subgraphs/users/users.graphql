@@ -1,5 +1,25 @@
-type User @key(fields:"email") {
-    email:ID!
-    name: String
-    totalProductsCreated: Int
+type Query {
+    user(id: ID!): User
+    allUsers: [User!]!
+}
+
+interface User @key(fields:"_id") {
+    _id: ID!
+    name: String!
+    email: String!
+    skills: [String!]!
+}
+
+type Applicant implements User @key(fields:"_id") {
+    _id: ID!
+    name: String!
+    email: String!
+    skills: [String!]!
+}
+
+type Employer implements User @key(fields:"_id") {
+    _id: ID!
+    name: String!
+    email: String!
+    skills: [String!]!
 }

@@ -20,17 +20,63 @@ const { readFileSync } = require('fs');
 const port = process.env.APOLLO_PORT || 4000;
 
 const users = [
-    { email: 'support@apollographql.com', name: "Apollo Studio Support", totalProductsCreated: 4 }
+  {
+    _id: '1',
+    name: "Jimmy",
+    email: "jimmy@jsandco.fr",
+    skills: ["coding", "powerpoint", "trolling"],
+    roles: ["employer"]
+  },
+  {
+    _id: '2',
+    name: "Ben",
+    email: "ben@jsandco.fr",
+    skills: ["coding", "number 2", "next"],
+    roles: ["applicant"]
+  },
+  {
+    _id: '3',
+    name: "David",
+    email: "doudou@jsandco.fr",
+    skills: ["coding", "bitsys", "joking"],
+    roles: ["applicant"]
+  }
 ]
 
 const typeDefs = gql(readFileSync('./users.graphql', { encoding: 'utf-8' }));
-const resolvers = {
-    User: {
-        __resolveReference: (reference) => {
-            return users.find(u => u.email == reference.email);
-        }
-    }
+
+const __resolveReference = (reference) => {
+  console.log('users.Applicant.__resolveReference', reference)
+  if(reference._id) return users.find(u => u._id == reference._id);
 }
+
+const resolvers = {
+  Query: {
+    allUsers: (_, args, context) => {
+        return users;
+    },
+    user: (_, args, context) => {
+        return users.find(p => p._id == args.id);
+    }
+  },
+
+  // Entity
+  User: {
+      __resolveReference,
+      __resolveType(obj, context, info) {
+          console.log('users.User.__resolveType', obj)
+          if(!obj.roles) return null
+
+          if(obj.roles.includes('employer')) return 'Employer'
+          if(obj.roles.includes('applicant')) return 'Applicant'
+
+          return null;
+      }   
+  },
+  Applicant: { __resolveReference },
+  Employer: { __resolveReference }
+}
+
 const server = new ApolloServer({ schema: buildFederatedSchema({ typeDefs, resolvers }) });
 server.listen( {port: port} ).then(({ url }) => {
   console.log(`🚀 Users subgraph ready at ${url}`);
