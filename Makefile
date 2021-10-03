@@ -190,3 +190,14 @@ docker-prune:
 take-five:
 	@echo waiting for robots to finish work ...
 	@sleep 5
+
+
+.PHONY: docker-custom
+docker-custom:
+	rover supergraph compose --config ./supergraph.yaml > supergraph.graphql
+	@sleep 1
+	docker-compose -f docker-compose.otel-collector.yml down
+	@sleep 1
+	docker-compose -f docker-compose.otel-collector.yml up -d --build
+	@sleep 1
+	docker-compose -f docker-compose.otel-collector.yml logs -f

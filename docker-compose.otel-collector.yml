@@ -11,15 +11,22 @@ services:
       - ./supergraph.graphql:/etc/config/supergraph.graphql
     ports:
       - "4000:4000"
-  products:
-    container_name: products
-    build: ./subgraphs/products
+
+  candidates:
+    container_name: candidates
+    build: ./subgraphs/candidates
     environment:
       - APOLLO_OTEL_EXPORTER_TYPE=collector
       - APOLLO_OTEL_EXPORTER_HOST=collector
-  inventory:
-    container_name: inventory
-    build: ./subgraphs/inventory
+  categories:
+    container_name: categories
+    build: ./subgraphs/categories
+    environment:
+      - APOLLO_OTEL_EXPORTER_TYPE=collector
+      - APOLLO_OTEL_EXPORTER_HOST=collector
+  jobs:
+    container_name: jobs
+    build: ./subgraphs/jobs
     environment:
       - APOLLO_OTEL_EXPORTER_TYPE=collector
       - APOLLO_OTEL_EXPORTER_HOST=collector
@@ -29,6 +36,7 @@ services:
     environment:
       - APOLLO_OTEL_EXPORTER_TYPE=collector
       - APOLLO_OTEL_EXPORTER_HOST=collector
+
   collector:
     container_name: collector
     image: otel/opentelemetry-collector:0.35.0
