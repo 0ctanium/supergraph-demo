@@ -45,9 +45,9 @@ const users = [
 
 const typeDefs = gql(readFileSync('./users.graphql', { encoding: 'utf-8' }));
 
-const __resolveReference = (reference) => {
-  console.log('users.Applicant.__resolveReference', reference)
-  if(reference._id) return users.find(u => u._id == reference._id);
+
+const __resolveReference = (ref) =>  {
+    if(ref._id) return users.find(u => u._id == ref._id);
 }
 
 const resolvers = {
@@ -64,7 +64,6 @@ const resolvers = {
   User: {
       __resolveReference,
       __resolveType(obj, context, info) {
-          console.log('users.User.__resolveType', obj)
           if(!obj.roles) return null
 
           if(obj.roles.includes('employer')) return 'Employer'
@@ -73,8 +72,12 @@ const resolvers = {
           return null;
       }   
   },
-  Applicant: { __resolveReference },
-  Employer: { __resolveReference }
+  Applicant: { 
+    __resolveReference
+  },
+  Employer: { 
+    __resolveReference
+  }
 }
 
 const server = new ApolloServer({ schema: buildFederatedSchema({ typeDefs, resolvers }) });

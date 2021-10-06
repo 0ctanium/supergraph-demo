@@ -29,7 +29,6 @@ const resolvers = {
   // Entity
   Job: {
     __resolveReference: (reference) => {
-      console.log('jobs.Job.__resolveReference', reference)
       if (reference._id) return products.find(p => p._id == reference._id);
     }
   },
@@ -37,11 +36,9 @@ const resolvers = {
   // Extends
   Employer: {
     jobs: (reference) => {
-      console.log('jobs.Employer.jobs', reference)
       if(reference._id) return jobs.filter(j => j.author == reference._id)
     },
     user: (reference) => {
-      console.log('jobs.Employer.user', reference)
         if(reference.author) return { __typename: "User", _id: reference.author }
     }
   }

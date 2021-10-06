@@ -29,11 +29,9 @@ const resolvers = {
     // Entity
     Candidate: {
         __resolveReference: (reference) => {
-            console.log('candidates.Candidate.__resolveReference', reference)
             if (reference._id) return candidates.find(c => c._id == reference._id);
         },
         user: (reference) => {
-            console.log('candidates.Candidate.user', reference)
             if(reference.user) return { __typename: "User", _id: reference.user }
         }
     },
@@ -41,13 +39,11 @@ const resolvers = {
     // Extends
     Job: {
         candidates: (reference) => {
-            console.log('candidate.Job.candidates', reference)
             if (reference._id) return candidates.filter(c => c.job == reference._id);
         }
     },
     Applicant: {
         candidates: (reference) => {
-            console.log('candidate.Applicant.candidates', reference)
             if (reference._id) return candidates.filter(c => c.user == reference._id);
         }
     }

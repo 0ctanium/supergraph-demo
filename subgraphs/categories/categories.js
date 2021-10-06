@@ -27,7 +27,6 @@ const typeDefs = gql(readFileSync('./categories.graphql', { encoding: 'utf-8' })
 const resolvers = {
   Category: {
         __resolveReference: (reference) => {
-          console.log('categories.Category.__resolveReference', reference)
             return users.find(u => u.email == reference.email);
         }
     }
