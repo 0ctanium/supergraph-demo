@@ -3,7 +3,7 @@ type Query {
     allUsers: [User!]!
 }
 
-interface User @key(fields:"_id") {
+interface User {
     _id: ID!
     name: String!
     email: String!
